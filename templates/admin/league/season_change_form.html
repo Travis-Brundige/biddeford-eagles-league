@@ -1,0 +1,35 @@
+{# SPDX-License-Identifier: AGPL-3.0-or-later #}
+{# Copyright (C) 2026 Biddeford Eagles League contributors #}
+{% extends "admin/change_form.html" %}
+{% load i18n %}
+
+{% block form_top %}
+  {{ block.super }}
+  {% if original.pk %}
+    <div class="module" style="margin-bottom: 1.25em;">
+      <p style="margin: 0.5em 0 0;">
+        <strong>{% trans "Schedule" %}</strong>
+        {% trans "— enroll at least two season teams in the inline below, then" %}
+        <a href="{{ generate_schedule_url }}">{% trans "open the round-robin generator" %}</a>
+        {% trans "(also under the top-right object tools). Five tables and circle order are fixed in code; set cycles and optional max weeks on the next page." %}
+        {% trans "Season.rules JSON currently only reads bye_team_points_default for bye rows." %}
+        <a href="{{ table_usage_url }}">{% trans "Table usage by team" %}</a>
+        {% trans "shows how often each enrolled team is scheduled on each table." %}
+      </p>
+    </div>
+  {% endif %}
+{% endblock %}
+
+{% block object-tools-items %}
+  {{ block.super }}
+  {% if original.pk %}
+    <li>
+      <a href="{{ generate_schedule_url }}">
+        {% trans "Generate round-robin schedule" %}
+      </a>
+    </li>
+    <li>
+      <a href="{{ table_usage_url }}">{% trans "Table usage by team" %}</a>
+    </li>
+  {% endif %}
+{% endblock %}

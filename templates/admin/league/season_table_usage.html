@@ -1,0 +1,60 @@
+{# SPDX-License-Identifier: AGPL-3.0-or-later #}
+{# Copyright (C) 2026 Biddeford Eagles League contributors #}
+{% extends "admin/base_site.html" %}
+{% load i18n %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+  <a href="{% url 'admin:index' %}">{% trans "Home" %}</a>
+  &rsaquo; <a href="{% url 'admin:app_list' app_label=opts.app_label %}">{{ opts.app_config.verbose_name }}</a>
+  &rsaquo; <a href="{% url 'admin:league_season_changelist' %}">{{ opts.verbose_name_plural|capfirst }}</a>
+  &rsaquo; <a href="{% url 'admin:league_season_change' season.pk %}">{{ season }}</a>
+  &rsaquo; {% trans "Table usage" %}
+</div>
+{% endblock %}
+
+{% block content %}
+<h1>{% trans "Scheduled matches by team and table" %}: {{ season }}</h1>
+
+<p class="help">
+  {% trans "Counts include both home and away appearances where a table number is set. Matches with no table are omitted." %}
+</p>
+
+{% if not usage_rows %}
+<p>{% trans "No season teams or no scheduled matches with table numbers yet." %}</p>
+{% else %}
+<table class="listing">
+  <thead>
+    <tr>
+      <th scope="col">{% trans "Season team" %}</th>
+      {% for t in table_numbers %}
+      <th scope="col">{% trans "Table" %} {{ t }}</th>
+      {% endfor %}
+      <th scope="col">{% trans "Total" %}</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for row in usage_rows %}
+    <tr>
+      <th scope="row">{{ row.season_team }}</th>
+      {% for c in row.cells %}
+      <td>{{ c }}</td>
+      {% endfor %}
+      <td><strong>{{ row.row_total }}</strong></td>
+    </tr>
+    {% endfor %}
+  </tbody>
+  <tfoot>
+    <tr>
+      <th scope="row">{% trans "Column totals" %}</th>
+      {% for c in column_cells %}
+      <td><strong>{{ c }}</strong></td>
+      {% endfor %}
+      <td><strong>{{ grand_total }}</strong></td>
+    </tr>
+  </tfoot>
+</table>
+{% endif %}
+
+<p><a href="{% url 'admin:league_season_change' season.pk %}">{% trans "Back to season" %}</a></p>
+{% endblock %}
