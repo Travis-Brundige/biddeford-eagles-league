@@ -1,0 +1,14 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Copyright (C) 2026 Biddeford Eagles League contributors
+
+[project]
+name = "biddeford-eagles-league"
+version = "0.1.0"
+description = "Biddeford Eagles In-House 8 Ball League"
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.14"
+dependencies = []
+classifiers = [
+    "License :: OSI Approved :: GNU Affero General Public License v3 or later (AGPLv3+)",
+]

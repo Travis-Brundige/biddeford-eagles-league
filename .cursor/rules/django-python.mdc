@@ -1,0 +1,16 @@
+---
+description: Django and Python conventions for this project
+globs: "**/*.py"
+alwaysApply: false
+---
+
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later -->
+<!-- Copyright (C) 2026 Biddeford Eagles League contributors -->
+
+# Django / Python
+
+- Use the **ORM** for normal CRUD and relations; raw SQL / `annotate` / subqueries when clarity or performance demands it.
+- Use **`select_related` / `prefetch_related`** in views that traverse FKs/M2M.
+- **Django Admin** is encouraged for internal league operations unless the user asks for a custom admin only.
+- Follow existing project patterns for views (FBV vs CBV); do not rewrite large areas for style alone.
+- Run tests with **`uv run pytest`** once configured.

@@ -1,0 +1,22 @@
+---
+description: Core stack and UI constraints for Biddeford Eagles League
+alwaysApply: true
+---
+
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later -->
+<!-- Copyright (C) 2026 Biddeford Eagles League contributors -->
+
+# Stack
+
+- **Django** + **Django ORM** for persistence; migrations committed.
+- **htmx** + **Pico CSS** (or agreed lightweight CSS); server-rendered HTML.
+- **No** React/Vue/Node bundlers or SPA frameworks unless the user explicitly changes `AGENTS.md`.
+- **uv** for dependencies (`uv run`, `uv.lock`); **Docker** for consistent run/deploy — do not assume a manually curated host Python install.
+
+# Security
+
+- No secrets in the repo. Production: `DEBUG=False`, tight `ALLOWED_HOSTS`, HTTPS-ready cookie settings, CSRF for form posts.
+
+# Changes
+
+- Keep diffs focused. Prefer tests for standings, scoring, and permission-sensitive behavior.
