@@ -8,7 +8,43 @@ description = "Biddeford Eagles In-House 8 Ball League"
 readme = "README.md"
 license = { file = "LICENSE" }
 requires-python = ">=3.14"
-dependencies = []
+dependencies = [
+    "django>=6.0.4",
+    "django-htmx>=1.27.0",
+    "gunicorn>=25.3.0",
+    "psycopg[binary]>=3.3.4",
+]
 classifiers = [
     "License :: OSI Approved :: GNU Affero General Public License v3 or later (AGPLv3+)",
 ]
+
+[dependency-groups]
+dev = [
+    "bandit>=1.9.4",
+    "pip-audit>=2.10.0",
+    "pytest>=9.0.3",
+    "pytest-django>=4.12.0",
+    "ruff>=0.15.12",
+]
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "config.settings"
+python_files = ["tests.py", "test_*.py"]
+
+[tool.ruff]
+target-version = "py314"
+src = ["."]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "W"]
+
+# Per-file ignores (only these rules are suppressed for the given globs):
+# - E501: line length > 88 chars. Django auto-generated migrations and long
+#   dotted validator names in settings are intentionally excluded.
+[tool.ruff.lint.per-file-ignores]
+"**/migrations/**" = ["E501"]
+"config/settings.py" = ["E501"]
+
+# Bandit: pytest uses assert (B101 noise); docker/entrypoint uses subprocess/execv for trusted bootstrap.
+[tool.bandit]
+exclude_dirs = [".venv", "league/migrations", "league/tests", "docker"]

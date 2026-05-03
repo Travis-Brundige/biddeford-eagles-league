@@ -1,0 +1,23 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later -->
+<!-- Copyright (C) 2026 Biddeford Eagles League contributors -->
+{% extends "base.html" %}
+{% block title %}Home — Biddeford Eagles League{% endblock %}
+{% block content %}
+  <h1>Biddeford Eagles League</h1>
+  <p>In-house billiards league — Django, htmx, and Pico.</p>
+  <article>
+    <header><h2>htmx check</h2></header>
+    <p>
+      <button
+        class="secondary"
+        hx-get="{% url 'hello-fragment' %}"
+        hx-target="#htmx-demo"
+        hx-swap="innerHTML"
+        type="button"
+      >
+        Load greeting
+      </button>
+    </p>
+    <p id="htmx-demo" aria-live="polite"></p>
+  </article>
+{% endblock %}

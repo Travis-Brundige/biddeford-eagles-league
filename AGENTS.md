@@ -7,7 +7,7 @@ This file is the **canonical guide** for AI coding agents (Cursor, Claude, ChatG
 
 ## Project purpose
 
-Charity / community **billiards league** site: record league stats, results, and standings (print-friendly). Stretch goals: public player-facing pages, admin for scores and league maintenance, possible future mobile client. **No commercial use**; self-hosted (e.g. AWS, Cloudflare edge + origin). **Security matters** even without revenue pressure.
+**Billiards league** site for the Eagles in-house league: record stats, results, and standings (print-friendly). Stretch goals: public player-facing pages, admin for scores and league maintenance, possible future mobile client. **No commercial use**; self-hosted (e.g. AWS, Cloudflare edge + origin). **Security matters** even without revenue pressure.
 
 ## Tech stack (non-negotiable defaults)
 
@@ -23,11 +23,11 @@ Charity / community **billiards league** site: record league stats, results, and
 
 ## How to run things
 
-Until the repo is scaffolded, **ask the human** or read `README.md` / `compose.yaml` for exact commands. Target patterns:
+Read **`README.md`** for exact commands (`migrate`, `runserver`, `docker compose`, tests). Target patterns:
 
 - Install deps: `uv sync` (locked: `uv sync --frozen` in CI/Docker).
-- Tests: `uv run pytest` (with `pytest-django` once configured).
-- Local app: Docker Compose for **web + DB** preferred over “install Postgres on the laptop.”
+- Tests: `uv run pytest` (pytest-django configured in `pyproject.toml`).
+- Docker Compose runs **web** (Gunicorn) + **Postgres**; local `runserver` uses SQLite unless `POSTGRES_HOST` is set.
 
 ## Engineering practices
 

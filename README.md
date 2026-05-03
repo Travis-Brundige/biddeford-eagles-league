@@ -3,7 +3,7 @@
 
 # Biddeford Eagles League
 
-Web app for a charity **billiards league**: record stats, publish results, and print standings. Stretch goals include a fuller public site, richer admin for scores and league maintenance, and possibly a mobile client for live entry.
+Web app for the **Biddeford Eagles in-house billiards league**: record stats, publish results, and print standings. Stretch goals include a fuller public site, richer admin for scores and league maintenance, and possibly a mobile client for live entry.
 
 ## Stack
 
@@ -19,18 +19,44 @@ Web app for a charity **billiards league**: record stats, publish results, and p
 
 ## Getting started
 
-The Django app, `compose.yaml`, and exact `uv run` / `docker compose` commands will land as the project is scaffolded. Until then:
+### Local (SQLite, development server)
 
-- Clone the repo.
-- Read **[`AGENTS.md`](./AGENTS.md)** if you are an AI agent or setting up automation — it is the canonical project contract.
+```bash
+uv sync
+source .venv/bin/activate   # optional; or use `uv run` below
+uv run python manage.py migrate
+uv run python manage.py runserver
+```
 
-Once scaffolding exists, this section will describe `uv sync`, running tests with `uv run pytest`, and starting the stack with Docker Compose.
+Open http://127.0.0.1:8000/ — home page with a small **htmx** fragment demo.
+
+### Local tooling
+
+```bash
+uv run ruff check .
+uv run pytest
+```
+
+### Docker (PostgreSQL + Gunicorn)
+
+The app image uses **`ghcr.io/astral-sh/uv:python3.14-dhi`** (Astral’s uv on **Docker Hardened Images** Python). DHI often has **no shell**, so the image uses **exec-form `RUN`**, **`ENTRYPOINT`** → **`docker/entrypoint.py`** (runs `migrate`, then **`os.execv`** into **gunicorn**), and **`CMD []`**. Pin a digest for reproducible deploys (see `Dockerfile` comments).
+
+```bash
+cp .env.example .env   # optional; compose defaults work for a quick try
+docker compose up --build
+```
+
+The **web** service runs migrations then **Gunicorn** on port **8000**. Postgres uses the `db` service; credentials default to `biddeford` / `biddeford` (override via `.env`).
+
+The **`Dockerfile`** installs dependencies in a separate layer (`uv sync … --no-install-project` on `pyproject.toml` + `uv.lock` only), then copies the rest of the tree and runs a final `uv sync` so **lockfile-only changes** do not invalidate the heavy dependency install when you edit templates or Python.
+
+With **no** `POSTGRES_HOST` set, Django uses **SQLite** (`db.sqlite3`). With `POSTGRES_HOST` set (e.g. to `db` in Compose), Django uses **PostgreSQL** via **psycopg**.
 
 ## Development approach
 
 - **Tests** where correctness matters (standings, scoring, permissions).
 - **Small, reviewable changes**; optional **feature flags** (env/settings first).
-- **Security**: no secrets in git; production-style Django settings when deployed.
+- **Security**: no secrets in git; set a real `SECRET_KEY` and `DEBUG=False` for production; use `ALLOWED_HOSTS` explicitly when not in debug.
 
 Details for tools and agents: **[`AGENTS.md`](./AGENTS.md)**. Cursor-specific rules: **`.cursor/rules/`**.
 
