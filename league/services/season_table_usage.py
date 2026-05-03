@@ -42,8 +42,7 @@ def team_table_usage_rows(
     rows: list[dict[str, Any]] = []
     for st in st_list:
         by_t = {
-            t: pair_counts.get((st.pk, t), 0)
-            for t in range(1, LEAGUE_TABLE_COUNT + 1)
+            t: pair_counts.get((st.pk, t), 0) for t in range(1, LEAGUE_TABLE_COUNT + 1)
         }
         rows.append(
             {
@@ -54,7 +53,6 @@ def team_table_usage_rows(
         )
 
     column_totals = {
-        t: sum(r["by_table"][t] for r in rows)
-        for t in range(1, LEAGUE_TABLE_COUNT + 1)
+        t: sum(r["by_table"][t] for r in rows) for t in range(1, LEAGUE_TABLE_COUNT + 1)
     }
     return rows, column_totals

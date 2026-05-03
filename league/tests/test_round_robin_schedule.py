@@ -149,20 +149,32 @@ def test_replace_twelve_teams_one_cycle_match_and_bye_counts():
     # 12×5 primary + 5 primary on round 13 + 1 make-up (66th pairing) on round 13.
     assert sum(w.matches.count() for w in Week.objects.filter(season=season)) == 66
     for wk in Week.objects.filter(season=season, number__lte=12).order_by("number"):
-        assert wk.matches.filter(
-            session_kind=ScheduledMatch.SessionKind.MAKEUP_SAME_WEEK
-        ).count() == 0
-        assert wk.matches.filter(
-            session_kind=ScheduledMatch.SessionKind.PRIMARY_THURSDAY
-        ).count() == 5
+        assert (
+            wk.matches.filter(
+                session_kind=ScheduledMatch.SessionKind.MAKEUP_SAME_WEEK
+            ).count()
+            == 0
+        )
+        assert (
+            wk.matches.filter(
+                session_kind=ScheduledMatch.SessionKind.PRIMARY_THURSDAY
+            ).count()
+            == 5
+        )
     final_wk = Week.objects.get(season=season, number=13)
     assert final_wk.matches.count() == 6
-    assert final_wk.matches.filter(
-        session_kind=ScheduledMatch.SessionKind.PRIMARY_THURSDAY
-    ).count() == 5
-    assert final_wk.matches.filter(
-        session_kind=ScheduledMatch.SessionKind.MAKEUP_SAME_WEEK
-    ).count() == 1
+    assert (
+        final_wk.matches.filter(
+            session_kind=ScheduledMatch.SessionKind.PRIMARY_THURSDAY
+        ).count()
+        == 5
+    )
+    assert (
+        final_wk.matches.filter(
+            session_kind=ScheduledMatch.SessionKind.MAKEUP_SAME_WEEK
+        ).count()
+        == 1
+    )
     makeup = final_wk.matches.get(
         session_kind=ScheduledMatch.SessionKind.MAKEUP_SAME_WEEK
     )

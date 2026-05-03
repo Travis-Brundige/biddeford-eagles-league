@@ -150,12 +150,8 @@ class SeasonAdmin(admin.ModelAdmin):
         opts = self.model._meta
         usage_rows, column_totals = team_table_usage_rows(season)
         for r in usage_rows:
-            r["cells"] = [
-                r["by_table"][t] for t in range(1, LEAGUE_TABLE_COUNT + 1)
-            ]
-        column_cells = [
-            column_totals[t] for t in range(1, LEAGUE_TABLE_COUNT + 1)
-        ]
+            r["cells"] = [r["by_table"][t] for t in range(1, LEAGUE_TABLE_COUNT + 1)]
+        column_cells = [column_totals[t] for t in range(1, LEAGUE_TABLE_COUNT + 1)]
         grand_total = sum(column_totals.values())
         context = {
             **self.admin_site.each_context(request),

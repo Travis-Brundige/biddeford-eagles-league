@@ -282,10 +282,7 @@ class ScheduledMatch(models.Model):
         constraints = [
             models.CheckConstraint(
                 condition=Q(table_number__isnull=True)
-                | (
-                    Q(table_number__gte=1)
-                    & Q(table_number__lte=LEAGUE_TABLE_COUNT)
-                ),
+                | (Q(table_number__gte=1) & Q(table_number__lte=LEAGUE_TABLE_COUNT)),
                 name="scheduled_match_table_number_range",
             ),
         ]
@@ -323,6 +320,7 @@ class ScheduledMatch(models.Model):
                 }
             )
         anchor = self.week.calendar_date
+
         def _iso_year_week(d: datetime.date) -> tuple[int, int]:
             ic = d.isocalendar()
             return (ic.year, ic.week)

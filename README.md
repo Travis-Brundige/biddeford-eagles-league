@@ -37,6 +37,8 @@ uv run ruff check .
 uv run pytest
 ```
 
+**Git hooks (fail before `git push`):** after `uv sync`, run `uv run pre-commit install` once. Each `git commit` then runs the same checks as CI (Ruff, Bandit, pip-audit, Django checks, pytest). Run everything manually with `uv run pre-commit run --all-files`.
+
 ### Docker (PostgreSQL + Gunicorn)
 
 The app image uses **`ghcr.io/astral-sh/uv:python3.14-dhi`** (Astral’s uv on **Docker Hardened Images** Python). DHI often has **no shell**, so the image uses **exec-form `RUN`**, **`ENTRYPOINT`** → **`docker/entrypoint.py`** (runs `migrate`, then **`os.execv`** into **gunicorn**), and **`CMD []`**. Pin a digest for reproducible deploys (see `Dockerfile` comments).

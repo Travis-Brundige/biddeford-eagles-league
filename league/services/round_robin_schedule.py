@@ -266,7 +266,9 @@ def assign_tables_greedy(
             if best_cost is None or trial_cost < best_cost:
                 best_cost = trial_cost
                 best_perm = perm
-        assert best_perm is not None
+        if best_perm is None:
+            msg = "Internal error: no table assignment permutation found."
+            raise ValueError(msg)
         week_rows: list[tuple[int, int, int]] = []
         for (hi, ai), tbl in zip(week.matches, best_perm, strict=True):
             week_rows.append((hi, ai, tbl))
@@ -332,9 +334,7 @@ def replace_season_schedule_from_round_robin(
     one_prototype = _one_cycle_week_plans(n, max_m)
     one_cycle_len = len(one_prototype)
     tail_plan_count = one_cycle_len - classical_count
-    last_tail_singleton = (
-        tail_plan_count > 0 and len(one_prototype[-1].matches) == 1
-    )
+    last_tail_singleton = tail_plan_count > 0 and len(one_prototype[-1].matches) == 1
     weeks_per_cycle = _persisted_weeks_from_prototype(
         one_prototype,
         classical_count,
