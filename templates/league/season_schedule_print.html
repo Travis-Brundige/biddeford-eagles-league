@@ -1,0 +1,250 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later -->
+<!-- Copyright (C) 2026 Biddeford Eagles League contributors -->
+{% extends "base.html" %}
+{% block title %}Schedule — {{ season.name }}{% endblock %}
+{% block extrahead %}
+  <style>
+    /* Grayscale only — reads clearly on laser/inkjet B&W */
+    :root {
+      --sp-ink: #141414;
+      --sp-muted: #4a4a4a;
+      --sp-rule: #9a9a9a;
+      --sp-band: #e6e6e6;
+      --sp-row-alt: #f2f2f2;
+    }
+
+    .schedule-print {
+      color: var(--sp-ink);
+      max-width: 100%;
+    }
+
+    .schedule-print header.doc-head {
+      border-bottom: 2px solid var(--sp-ink);
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+    }
+
+    .schedule-print header.doc-head h1 {
+      font-size: 1.35rem;
+      margin-bottom: 0.15rem;
+    }
+
+    .schedule-print .meta {
+      color: var(--sp-muted);
+      font-size: 0.9rem;
+    }
+
+    .schedule-print .toolbar {
+      margin-bottom: 1rem;
+    }
+
+    .schedule-print .toolbar a {
+      font-weight: 600;
+    }
+
+    .schedule-print h2 {
+      font-size: 1rem;
+      margin: 1rem 0 0.4rem;
+    }
+
+    .schedule-print .roster-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.15rem 1.5rem;
+      font-size: 0.88rem;
+      border: 1px solid var(--sp-rule);
+      padding: 0.5rem 0.75rem;
+      margin-bottom: 1rem;
+    }
+
+    .schedule-print .roster-grid li {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .schedule-print .roster-grid .tn {
+      display: inline-block;
+      font-weight: 700;
+      min-width: 1.75rem;
+      color: var(--sp-ink);
+    }
+
+    .schedule-columns {
+      column-count: 1;
+      column-gap: 1.25rem;
+    }
+
+    @media (min-width: 768px) {
+      .schedule-columns {
+        column-count: 2;
+      }
+    }
+
+    .schedule-print .week-block {
+      break-inside: avoid;
+      page-break-inside: avoid;
+      margin-bottom: 0.65rem;
+      border: 1px solid var(--sp-rule);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .schedule-print .week-head {
+      background: var(--sp-band);
+      border-bottom: 1px solid var(--sp-rule);
+      font-size: 0.82rem;
+      font-weight: 700;
+      padding: 0.25rem 0.45rem;
+    }
+
+    .schedule-print .week-head .wk-num {
+      margin-right: 0.35rem;
+    }
+
+    .schedule-print .week-head .wk-date {
+      color: var(--sp-muted);
+      font-weight: 600;
+    }
+
+    .schedule-print table {
+      width: 100%;
+      font-size: 0.78rem;
+      border-collapse: collapse;
+    }
+
+    .schedule-print td,
+    .schedule-print th {
+      border-bottom: 1px solid #ccc;
+      padding: 0.2rem 0.35rem;
+      vertical-align: top;
+    }
+
+    .schedule-print tbody tr:nth-child(even) {
+      background: var(--sp-row-alt);
+    }
+
+    .schedule-print th {
+      background: #dedede;
+      font-weight: 700;
+      text-align: left;
+      width: 2rem;
+    }
+
+    .schedule-print .tbl {
+      text-align: center;
+      width: 2.25rem;
+      font-weight: 700;
+    }
+
+    .schedule-print .bye-block {
+      font-size: 0.72rem;
+      padding: 0.25rem 0.45rem;
+      background: #fafafa;
+      border-top: 1px dashed var(--sp-rule);
+      color: var(--sp-muted);
+    }
+
+    @media print {
+      .no-print {
+        display: none !important;
+      }
+
+      body {
+        font-size: 9.5pt;
+      }
+
+      main.container {
+        max-width: none;
+        padding: 0;
+      }
+
+      .schedule-columns {
+        column-count: 2;
+      }
+
+      .schedule-print .week-block {
+        border: 1px solid #666;
+      }
+
+      .schedule-print a[href]:after {
+        content: none !important;
+      }
+    }
+  </style>
+{% endblock %}
+{% block content %}
+  <article class="schedule-print">
+    <div class="toolbar no-print">
+      <a href="{% url 'home' %}">← Home</a>
+      ·
+      <a href="#" onclick="window.print(); return false;">Print</a>
+    </div>
+    <header class="doc-head">
+      <h1>{{ season.name }} — schedule</h1>
+      <p class="meta">
+        {{ season.get_status_display }} · {{ season.start_date|date:"M j, Y" }} — {{ season.end_date|date:"M j, Y" }}
+        · {{ season.format }}
+      </p>
+    </header>
+
+    <h2>Teams (schedule numbers)</h2>
+    <ul class="roster-grid">
+      {% for t in roster %}
+        <li><span class="tn">#{{ t.number }}</span> {{ t.name }}</li>
+      {% endfor %}
+    </ul>
+
+    <h2>Weeks</h2>
+    <div class="schedule-columns">
+      {% for w in weeks %}
+        <section class="week-block">
+          <div class="week-head">
+            <span class="wk-num">Round {{ w.number }}</span>
+            <span class="wk-date">
+              {% if w.calendar_date %}
+                {{ w.calendar_date|date:"l, M j, Y" }}
+              {% else %}
+                Date TBD
+              {% endif %}
+            </span>
+          </div>
+          {% if w.matches %}
+            <table>
+              <thead>
+                <tr>
+                  <th class="tbl">Tbl</th>
+                  <th>Match</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for m in w.matches %}
+                  <tr>
+                    <td class="tbl">{% if m.table_number %}{{ m.table_number }}{% else %}—{% endif %}</td>
+                    <td>
+                      <strong>#{{ m.home_team_no }}</strong> {{ m.home_team_name }} vs
+                      <strong>#{{ m.away_team_no }}</strong> {{ m.away_team_name }}
+                    </td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          {% endif %}
+          {% if w.byes %}
+            <div class="bye-block">
+              Byes:
+              {% for b in w.byes %}
+                <strong>#{{ b.team_no }}</strong> {{ b.team_name }} ({{ b.points }} pts){% if not forloop.last %} · {% endif %}
+              {% endfor %}
+            </div>
+          {% endif %}
+          {% if not w.matches and not w.byes %}
+            <p style="font-size: 0.78rem; margin: 0.35rem 0.45rem; color: var(--sp-muted);">No matches or byes yet.</p>
+          {% endif %}
+        </section>
+      {% empty %}
+        <p class="meta">No weeks in this season yet.</p>
+      {% endfor %}
+    </div>
+  </article>
+{% endblock %}

@@ -5,6 +5,22 @@
 {% block content %}
   <h1>Biddeford Eagles League</h1>
   <p>In-house billiards league — Django, htmx, and Pico.</p>
+  {% if seasons %}
+    <article>
+      <header><h2>Printable sheets</h2></header>
+      <ul>
+        {% for s in seasons %}
+          <li>
+            {{ s.name }} <small>({{ s.start_date|date:"Y" }})</small>
+            —
+            <a href="{% url 'season-schedule-print' s.slug %}">Schedule</a>
+            ·
+            <a href="{% url 'season-rosters-print' s.slug %}">Rosters</a>
+          </li>
+        {% endfor %}
+      </ul>
+    </article>
+  {% endif %}
   <article>
     <header><h2>htmx check</h2></header>
     <p>

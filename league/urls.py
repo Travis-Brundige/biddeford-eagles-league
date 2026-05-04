@@ -8,4 +8,14 @@ from . import views
 urlpatterns = [
     path("", views.home, name="home"),
     path("fragment/hello/", views.hello_fragment, name="hello-fragment"),
+    path(
+        "season/<slug:season_slug>/schedule/print/",
+        views.season_schedule_print,
+        name="season-schedule-print",
+    ),
+    path(
+        "season/<slug:season_slug>/rosters/print/",
+        views.season_rosters_print,
+        name="season-rosters-print",
+    ),
 ]

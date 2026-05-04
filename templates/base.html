@@ -11,6 +11,7 @@
       href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css"
     />
     <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.4/dist/htmx.min.js" defer></script>
+    {% block extrahead %}{% endblock %}
   </head>
   <body>
     <main class="container">{% block content %}{% endblock %}</main>
